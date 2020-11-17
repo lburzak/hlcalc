@@ -20,24 +20,15 @@ static
 
 procedure CollectDigit;
 begin CollectDigit;
-    sub(48, al);
-
+	mov(acc, ebx);
+	
+	sub(48, al);
+    intmul(10, ebx);
     movsx(al, eax);
-    add(acc, eax);
-    intmul(10, eax);
+    add(eax, ebx);
 
-    mov(eax, acc);
+    mov(ebx, acc);
 end CollectDigit;
-
-procedure FinishInput;
-begin FinishInput;
-    mov(acc, eax);
-    cdq();
-    idiv(10, edx:eax);
-    mov(eax, acc);
-    if (neg_flag == true) then neg(acc); endif;
-    mov(false, neg_flag);
-end FinishInput;
 
 procedure Put;
 begin Put;
@@ -88,11 +79,12 @@ begin Calculator;
         elseif (al == 'q') then
             exit Calculator;
         elseif (al == '+') then
+        	Operate();
             mov(OP_ADD, _op);
         elseif (al == '-') then
+        	Operate();
             mov(OP_SUBTRACT, _op);
         elseif (stdin.eoln()) then
-        	FinishInput();
     		Operate();
     		mov(OP_PUT, _op);
         endif;
