@@ -79,10 +79,10 @@ begin Calculator;
         elseif (al == 'q') then
             exit Calculator;
         elseif (al == '+') then
-        	Operate();
+        	if (_op != OP_PUT) then Operate(); endif;
             mov(OP_ADD, _op);
         elseif (al == '-') then
-        	Operate();
+        	if (_op != OP_PUT) then Operate(); endif;
             mov(OP_SUBTRACT, _op);
         elseif (stdin.eoln()) then
     		Operate();
