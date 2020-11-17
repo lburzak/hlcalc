@@ -1,0 +1,103 @@
+program Calculator;
+#include("stdlib.hhf");
+
+type Op: enum {
+    OP_PUT,
+    OP_ADD,
+    OP_NULL,
+    OP_SUBTRACT
+};
+
+static
+    x: int32 := 10;
+    i: int32 := 1;
+    acc: int32 := 0;
+    o: int8;
+    ans: int32;
+    b: int32;
+    neg_flag: boolean := false;
+    _op: Op := OP_PUT;
+
+procedure CollectDigit;
+begin CollectDigit;
+    sub(48, al);
+
+    movsx(al, eax);
+    add(acc, eax);
+    intmul(10, eax);
+
+    mov(eax, acc);
+end CollectDigit;
+
+procedure FinishInput;
+begin FinishInput;
+    mov(acc, eax);
+    cdq();
+    idiv(10, edx:eax);
+    mov(eax, acc);
+    if (neg_flag == true) then neg(acc); endif;
+    mov(false, neg_flag);
+end FinishInput;
+
+procedure Put;
+begin Put;
+    mov(acc, ans);
+    stdout.put("After PUT acc=", acc, " ans=", ans, nl);
+end Put;
+
+procedure OpAdd;
+begin OpAdd;
+    stdout.put("Adding ", acc, " to ", ans, nl);
+    mov(acc, eax);
+    add(eax, ans);
+    stdout.put("= ", ans, nl);
+end OpAdd;
+
+procedure OpSubtract;
+begin OpSubtract;
+    stdout.put("Adding ", acc, " to ", ans, nl);
+    mov(acc, eax);
+    sub(eax, ans);
+    stdout.put("= ", ans, nl);
+end OpSubtract;
+
+procedure Operate;
+begin Operate;
+    if (_op == OP_PUT) then
+        Put();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_ADD) then
+        OpAdd();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_SUBTRACT) then
+        OpSubtract();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_NULL) then
+        mov(OP_PUT, _op);
+    endif;
+
+    // Clear accumulator
+    mov(0, acc);
+end Operate;
+
+begin Calculator;
+    stdin.flushInput();
+
+    forever
+        repeat
+            stdin.getc();
+            if (al >= '0' && al <= '9') then
+                CollectDigit();
+            elseif (al == 'q') then
+                exit Calculator;
+            elseif (al == '+') then
+                mov(OP_ADD, _op);
+            elseif (al == '-') then
+                mov(OP_SUBTRACT, _op);
+            endif;
+        until (stdin.eoln());
+
+        FinishInput();
+        Operate();
+    endfor;
+end Calculator;
