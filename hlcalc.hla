@@ -13,7 +13,7 @@ static
     i: int32 := 1;
     acc: int32 := 0;
     o: int8;
-    ans: int32;
+    ans: int32 := 0;
     b: int32;
     neg_flag: boolean := false;
     _op: Op := OP_PUT;
@@ -72,8 +72,6 @@ begin Operate;
     elseif (_op == OP_SUBTRACT) then
         OpSubtract();
         mov(OP_NULL, _op);
-    elseif (_op == OP_NULL) then
-        mov(OP_PUT, _op);
     endif;
 
     // Clear accumulator
@@ -84,20 +82,19 @@ begin Calculator;
     stdin.flushInput();
 
     forever
-        repeat
-            stdin.getc();
-            if (al >= '0' && al <= '9') then
-                CollectDigit();
-            elseif (al == 'q') then
-                exit Calculator;
-            elseif (al == '+') then
-                mov(OP_ADD, _op);
-            elseif (al == '-') then
-                mov(OP_SUBTRACT, _op);
-            endif;
-        until (stdin.eoln());
-
-        FinishInput();
-        Operate();
+        stdin.getc();
+        if (al >= '0' && al <= '9') then
+            CollectDigit();
+        elseif (al == 'q') then
+            exit Calculator;
+        elseif (al == '+') then
+            mov(OP_ADD, _op);
+        elseif (al == '-') then
+            mov(OP_SUBTRACT, _op);
+        elseif (stdin.eoln()) then
+        	FinishInput();
+    		Operate();
+    		mov(OP_PUT, _op);
+        endif;
     endfor;
 end Calculator;
