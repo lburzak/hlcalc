@@ -2,9 +2,9 @@ program Calculator;
 #include("stdlib.hhf");
 
 type Op: enum {
+    OP_NULL,
     OP_PUT,
     OP_ADD,
-    OP_NULL,
     OP_SUBTRACT,
     OP_MULTIPLY,
     OP_DIVIDE,
@@ -20,6 +20,7 @@ static
     b: int32;
     buf: int64;
     neg_flag: boolean := false;
+    emp_flag: boolean := true;
     _op: Op := OP_PUT;
 
 procedure CollectDigit;
@@ -32,6 +33,7 @@ begin CollectDigit;
     add(eax, ebx);
 
     mov(ebx, acc);
+    mov(false, emp_flag);
 end CollectDigit;
 
 procedure OpPut;
@@ -94,7 +96,11 @@ end OpPower;
 
 procedure Operate;
 begin Operate;
-    if (_op == OP_PUT) then
+	stdout.put("OP=");
+	stdout.puti8(_op);
+	stdout.newln();
+	
+    if (_op == OP_PUT && !emp_flag) then
         OpPut();
         mov(OP_NULL, _op);
     elseif (_op == OP_ADD) then
@@ -128,22 +134,23 @@ begin Calculator;
         elseif (al == 'q') then
             exit Calculator;
         elseif (al == '+') then
-        	if (_op != OP_PUT) then Operate(); endif;
+        	Operate();
             mov(OP_ADD, _op);
         elseif (al == '-') then
-        	if (_op != OP_PUT) then Operate(); endif;
+        	Operate();
             mov(OP_SUBTRACT, _op);
         elseif (al == '*') then
-        	if (_op != OP_PUT) then Operate(); endif;
+        	Operate();
             mov(OP_MULTIPLY, _op);
         elseif (al == '/') then
-        	if (_op != OP_PUT) then Operate(); endif;
+        	Operate();
             mov(OP_DIVIDE, _op);
         elseif (al == '^') then
-        	if (_op != OP_PUT) then Operate(); endif;
+        	Operate();
             mov(OP_POWER, _op);
         elseif (stdin.eoln()) then
     		Operate();
+    		mov(true, emp_flag);
     		mov(OP_PUT, _op);
         endif;
     endfor;
