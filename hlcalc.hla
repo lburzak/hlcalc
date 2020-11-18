@@ -68,9 +68,9 @@ procedure OpDivide;
 begin OpDivide;
 	if (ans == 0) then stdout.put("!! /0", nl);
     else
-        mov(acc, eax);
+        mov(ans, eax);
         cdq();
-        idiv(ans, edx:eax);
+        idiv(acc, edx:eax);
         stdout.put("= ");
         stdout.puti32(eax);
         stdout.put("+");
