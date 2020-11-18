@@ -122,6 +122,7 @@ begin Operate;
 
     // Clear accumulator
     mov(0, acc);
+	mov(true, emp_flag);
 end Operate;
 
 begin Calculator;
@@ -150,7 +151,6 @@ begin Calculator;
             mov(OP_POWER, _op);
         elseif (stdin.eoln()) then
     		Operate();
-    		mov(true, emp_flag);
     		mov(OP_PUT, _op);
         endif;
     endfor;
