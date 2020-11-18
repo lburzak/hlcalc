@@ -33,12 +33,10 @@ end CollectDigit;
 procedure Put;
 begin Put;
     mov(acc, ans);
-    stdout.put("After PUT acc=", acc, " ans=", ans, nl);
 end Put;
 
 procedure OpAdd;
 begin OpAdd;
-    stdout.put("Adding ", acc, " to ", ans, nl);
     mov(acc, eax);
     add(eax, ans);
     stdout.put("= ", ans, nl);
@@ -46,7 +44,6 @@ end OpAdd;
 
 procedure OpSubtract;
 begin OpSubtract;
-    stdout.put("Adding ", acc, " to ", ans, nl);
     mov(acc, eax);
     sub(eax, ans);
     stdout.put("= ", ans, nl);
