@@ -34,10 +34,10 @@ begin CollectDigit;
     mov(ebx, acc);
 end CollectDigit;
 
-procedure Put;
-begin Put;
+procedure OpPut;
+begin OpPut;
     mov(acc, ans);
-end Put;
+end OpPut;
 
 procedure OpAdd;
 begin OpAdd;
@@ -95,7 +95,7 @@ end OpPower;
 procedure Operate;
 begin Operate;
     if (_op == OP_PUT) then
-        Put();
+        OpPut();
         mov(OP_NULL, _op);
     elseif (_op == OP_ADD) then
         OpAdd();
