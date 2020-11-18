@@ -100,6 +100,10 @@ begin Operate;
 	stdout.puti8(_op);
 	stdout.newln();
 	
+	if (neg_flag) then 
+		neg(acc);
+	endif;
+	
     if (_op == OP_PUT && !emp_flag) then
         OpPut();
         mov(OP_NULL, _op);
@@ -123,6 +127,7 @@ begin Operate;
     // Clear accumulator
     mov(0, acc);
 	mov(true, emp_flag);
+	mov(false, neg_flag);
 end Operate;
 
 begin Calculator;
@@ -137,6 +142,8 @@ begin Calculator;
         elseif (al == '+') then
         	Operate();
             mov(OP_ADD, _op);
+        elseif (al == '-' && emp_flag && _op != OP_PUT) then
+        	mov(true, neg_flag);
         elseif (al == '-') then
         	Operate();
             mov(OP_SUBTRACT, _op);
