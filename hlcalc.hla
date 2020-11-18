@@ -5,7 +5,10 @@ type Op: enum {
     OP_PUT,
     OP_ADD,
     OP_NULL,
-    OP_SUBTRACT
+    OP_SUBTRACT,
+    OP_MULTIPLY,
+    OP_DIVIDE,
+    OP_POWER
 };
 
 static
@@ -15,6 +18,7 @@ static
     o: int8;
     ans: int32 := 0;
     b: int32;
+    buf: int64;
     neg_flag: boolean := false;
     _op: Op := OP_PUT;
 
@@ -49,6 +53,45 @@ begin OpSubtract;
     stdout.put("= ", ans, nl);
 end OpSubtract;
 
+procedure OpMultiply;
+begin OpMultiply;
+	mov(acc, eax);
+	mov(ans, ebx);
+	imul(ebx);
+	mov(edx:eax, buf);
+	stdout.put("= ", buf, nl);
+end OpMultiply;
+
+procedure OpDivide;
+begin OpDivide;
+	if (ans == 0) then stdout.put("!! /0", nl);
+    else
+        mov(acc, eax);
+        cdq();
+        idiv(ans, edx:eax);
+        stdout.put("= ");
+        stdout.puti32(eax);
+        stdout.put("+");
+        stdout.puti32(edx);
+        stdout.put("/", ans, nl);
+        stdout.newln();
+    endif;
+end OpDivide;
+
+procedure OpPower;
+begin OpPower;
+	mov(ans, eax);
+
+    while (acc > 1) do
+        mul(ans);
+        dec(acc);
+    endwhile;
+    
+    stdout.put("= ");
+    stdout.puti32(eax);
+    stdout.newln();
+end OpPower;
+
 procedure Operate;
 begin Operate;
     if (_op == OP_PUT) then
@@ -59,6 +102,15 @@ begin Operate;
         mov(OP_NULL, _op);
     elseif (_op == OP_SUBTRACT) then
         OpSubtract();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_MULTIPLY) then
+        OpMultiply();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_DIVIDE) then
+        OpDivide();
+        mov(OP_NULL, _op);
+    elseif (_op == OP_POWER) then
+        OpPower();
         mov(OP_NULL, _op);
     endif;
 
@@ -81,6 +133,15 @@ begin Calculator;
         elseif (al == '-') then
         	if (_op != OP_PUT) then Operate(); endif;
             mov(OP_SUBTRACT, _op);
+        elseif (al == '*') then
+        	if (_op != OP_PUT) then Operate(); endif;
+            mov(OP_MULTIPLY, _op);
+        elseif (al == '/') then
+        	if (_op != OP_PUT) then Operate(); endif;
+            mov(OP_DIVIDE, _op);
+        elseif (al == '^') then
+        	if (_op != OP_PUT) then Operate(); endif;
+            mov(OP_POWER, _op);
         elseif (stdin.eoln()) then
     		Operate();
     		mov(OP_PUT, _op);
