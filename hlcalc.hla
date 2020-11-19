@@ -105,8 +105,9 @@ begin OpPower;
         dec(acc);
     endwhile;
     
+    mov(eax, ans);
     stdout.put("= ");
-    stdout.puti32(eax);
+    stdout.puti32(ans);
     stdout.newln();
 end OpPower;
 
