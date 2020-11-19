@@ -23,6 +23,11 @@ begin warn;
 	stdout.put("! ", content, nl);
 end warn;
 
+procedure info(content: string);
+begin info;
+	stdout.put("  ", content, nl);
+end info;
+
 procedure answer;
 begin answer;
 	stdout.put("= ", ans, nl);
@@ -178,6 +183,7 @@ begin HandleInput;
 end HandleInput;
 
 begin Calculator;
+	info("Enter expression, or 'q' to quit");
    	prompt();
 
     forever
