@@ -22,6 +22,11 @@ static
     neg_flag: boolean := false;
     emp_flag: boolean := true;
     _op: Op := OP_PUT;
+    
+procedure warn(content: string);
+begin warn;
+	stdout.put("! ", content, nl);
+end warn;
 
 procedure CollectDigit;
 begin CollectDigit;
@@ -60,8 +65,18 @@ begin OpMultiply;
 	mov(acc, eax);
 	mov(ans, ebx);
 	imul(ebx);
-	mov(edx:eax, buf);
-	stdout.put("= ", buf, nl);
+	try
+		into();
+		mov(eax, ans);
+		stdout.put(ans, nl);
+	exception (ex.IntoInstr)
+		mov(edx:eax, buf);
+		stdout.put("= ");
+		stdout.puti64(edx:eax);
+		stdout.newln();
+		warn("Answer out of range. Calculations chain broken.");
+		mov(0, ans);
+	endtry;
 end OpMultiply;
 
 procedure OpDivide;
