@@ -28,6 +28,11 @@ begin warn;
 	stdout.put("! ", content, nl);
 end warn;
 
+procedure answer;
+begin answer;
+	stdout.put("= ", ans, nl);
+end answer;
+
 procedure CollectDigit;
 begin CollectDigit;
 	mov(acc, ebx);
@@ -50,14 +55,12 @@ procedure OpAdd;
 begin OpAdd;
     mov(acc, eax);
     add(eax, ans);
-    stdout.put("= ", ans, nl);
 end OpAdd;
 
 procedure OpSubtract;
 begin OpSubtract;
     mov(acc, eax);
     sub(eax, ans);
-    stdout.put("= ", ans, nl);
 end OpSubtract;
 
 procedure OpMultiply;
@@ -68,12 +71,14 @@ begin OpMultiply;
 	try
 		into();
 		mov(eax, ans);
-		stdout.put(ans, nl);
 	exception (ex.IntoInstr)
 		mov(edx:eax, buf);
+		
+		// Show non-persistent answer
 		stdout.put("= ");
 		stdout.puti64(edx:eax);
 		stdout.newln();
+		
 		warn("Answer out of range. Calculations chain broken.");
 		mov(0, ans);
 	endtry;
@@ -87,12 +92,6 @@ begin OpDivide;
         cdq();
         idiv(acc, edx:eax);
         mov(eax, ans);
-        stdout.put("= ");
-        stdout.puti32(ans);
-        stdout.put("+");
-        stdout.puti32(edx);
-        stdout.put("/", ans, nl);
-        stdout.newln();
     endif;
 end OpDivide;
 
@@ -106,17 +105,10 @@ begin OpPower;
     endwhile;
     
     mov(eax, ans);
-    stdout.put("= ");
-    stdout.puti32(ans);
-    stdout.newln();
 end OpPower;
 
 procedure Operate;
-begin Operate;
-	stdout.put("OP=");
-	stdout.puti8(_op);
-	stdout.newln();
-	
+begin Operate;	
 	if (neg_flag) then 
 		neg(acc);
 	endif;
@@ -175,6 +167,7 @@ begin Calculator;
             mov(OP_POWER, _op);
         elseif (stdin.eoln()) then
     		Operate();
+   			answer();
     		mov(OP_PUT, _op);
         endif;
     endfor;
