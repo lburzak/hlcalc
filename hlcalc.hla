@@ -33,6 +33,11 @@ begin answer;
 	stdout.put("= ", ans, nl);
 end answer;
 
+procedure prompt;
+begin prompt;
+	stdout.put("> ");
+end prompt;
+
 procedure CollectDigit;
 begin CollectDigit;
 	mov(acc, ebx);
@@ -140,7 +145,7 @@ begin Operate;
 end Operate;
 
 begin Calculator;
-    stdin.flushInput();
+   	prompt();
 
     forever
         stdin.getc();
@@ -167,8 +172,9 @@ begin Calculator;
             mov(OP_POWER, _op);
         elseif (stdin.eoln()) then
     		Operate();
-   			answer();
     		mov(OP_PUT, _op);
+   			answer();
+   			prompt();
         endif;
     endfor;
 end Calculator;
