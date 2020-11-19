@@ -12,13 +12,8 @@ type Op: enum {
 };
 
 static
-    x: int32 := 10;
-    i: int32 := 1;
     acc: int32 := 0;
-    o: int8;
     ans: int32 := 0;
-    b: int32;
-    buf: int64;
     neg_flag: boolean := false;
     emp_flag: boolean := true;
     _op: Op := OP_PUT;
@@ -76,9 +71,7 @@ begin OpMultiply;
 	try
 		into();
 		mov(eax, ans);
-	exception (ex.IntoInstr)
-		mov(edx:eax, buf);
-		
+	exception (ex.IntoInstr)		
 		// Show non-persistent answer
 		stdout.put("= ");
 		stdout.puti64(edx:eax);
