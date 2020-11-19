@@ -12,11 +12,11 @@ type Op: enum {
 };
 
 static
-    acc: int32 := 0;
-    ans: int32 := 0;
-    neg_flag: boolean := false;
-    emp_flag: boolean := true;
-    _op: Op := OP_PUT;
+    ans: int32;
+    acc: int32;
+    neg_flag: boolean;
+    emp_flag: boolean;
+    _op: Op;
     
 procedure warn(content: string);
 begin warn;
@@ -32,6 +32,19 @@ procedure prompt;
 begin prompt;
 	stdout.put("> ");
 end prompt;
+
+procedure clear;
+begin clear;
+	mov(0, acc);
+	mov(true, emp_flag);
+	mov(false, neg_flag);
+	mov(OP_NULL, _op);
+end clear;
+
+procedure reset;
+begin reset;
+	mov(0, ans);
+end reset;
 
 procedure CollectDigit;
 begin CollectDigit;
@@ -78,7 +91,7 @@ begin OpMultiply;
 		stdout.newln();
 		
 		warn("Answer out of range. Calculations chain broken.");
-		mov(0, ans);
+		reset();
 	endtry;
 end OpMultiply;
 
@@ -113,7 +126,6 @@ begin Operate;
 	
     if (_op == OP_PUT && !emp_flag) then
         OpPut();
-        mov(OP_NULL, _op);
     elseif (_op == OP_ADD) then
         OpAdd();
         mov(OP_NULL, _op);
@@ -130,44 +142,46 @@ begin Operate;
         OpPower();
         mov(OP_NULL, _op);
     endif;
-
-    // Clear accumulator
-    mov(0, acc);
-	mov(true, emp_flag);
-	mov(false, neg_flag);
+    
+    clear();
 end Operate;
+
+procedure HandleInput;
+begin HandleInput;
+	if (al >= '0' && al <= '9') then
+        CollectDigit();
+    elseif (al == 'q') then
+        exit Calculator;
+    elseif (al == '+') then
+    	Operate();
+        mov(OP_ADD, _op);
+    elseif (al == '-' && emp_flag && _op != OP_PUT) then
+    	mov(true, neg_flag);
+    elseif (al == '-') then
+    	Operate();
+        mov(OP_SUBTRACT, _op);
+    elseif (al == '*') then
+    	Operate();
+        mov(OP_MULTIPLY, _op);
+    elseif (al == '/') then
+    	Operate();
+        mov(OP_DIVIDE, _op);
+    elseif (al == '^') then
+    	Operate();
+        mov(OP_POWER, _op);
+    elseif (stdin.eoln()) then
+    	Operate();
+    	mov(OP_PUT, _op);
+   		answer();
+   		prompt();
+    endif;
+end HandleInput;
 
 begin Calculator;
    	prompt();
 
     forever
         stdin.getc();
-        if (al >= '0' && al <= '9') then
-            CollectDigit();
-        elseif (al == 'q') then
-            exit Calculator;
-        elseif (al == '+') then
-        	Operate();
-            mov(OP_ADD, _op);
-        elseif (al == '-' && emp_flag && _op != OP_PUT) then
-        	mov(true, neg_flag);
-        elseif (al == '-') then
-        	Operate();
-            mov(OP_SUBTRACT, _op);
-        elseif (al == '*') then
-        	Operate();
-            mov(OP_MULTIPLY, _op);
-        elseif (al == '/') then
-        	Operate();
-            mov(OP_DIVIDE, _op);
-        elseif (al == '^') then
-        	Operate();
-            mov(OP_POWER, _op);
-        elseif (stdin.eoln()) then
-    		Operate();
-    		mov(OP_PUT, _op);
-   			answer();
-   			prompt();
-        endif;
+        HandleInput();
     endfor;
 end Calculator;
