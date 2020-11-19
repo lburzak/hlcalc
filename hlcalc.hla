@@ -102,7 +102,7 @@ end OpMultiply;
 
 procedure OpDivide;
 begin OpDivide;
-	if (ans == 0) then stdout.put("!! /0", nl);
+	if (acc == 0) then warn("Division by 0");
     else
         mov(ans, eax);
         cdq();
