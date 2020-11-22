@@ -11,7 +11,7 @@ type Op: enum {
     OP_POWER
 };
 
-static
+storage
     ans: int32;
     acc: int32;
     neg_flag: boolean;
@@ -114,6 +114,13 @@ end OpDivide;
 procedure OpPower;
 begin OpPower;
 	mov(ans, eax);
+	
+	if (acc < 0) then
+		mov(true, neg_flag);
+		neg(acc);
+	else
+		mov(false, neg_flag);
+	endif;
 
     while (acc > 1) do
         mul(ans);
@@ -121,6 +128,13 @@ begin OpPower;
     endwhile;
     
     mov(eax, ans);
+    
+    if (neg_flag) then
+    	stdout.put("= 1/", ans, nl);
+    	mov(0, ans);
+    endif;
+    
+    mov (false, neg_flag);
 end OpPower;
 
 procedure Operate;
@@ -183,6 +197,8 @@ begin HandleInput;
 end HandleInput;
 
 begin Calculator;
+	clear();
+	mov(OP_PUT, _op);
 	info("Enter expression, or 'q' to quit");
    	prompt();
 
